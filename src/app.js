@@ -3,6 +3,7 @@ const express = require('express')
 const hbs = require('hbs')
 const geocode = require('./utils/geocode')
 const forecast = require('./utils/forecast')
+require('dotenv').config()
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -49,12 +50,12 @@ app.get('/weather', (req, res) => {
         })
     }
 
-    geocode(req.query.address, (error, {latitude, longitude, location} = {}) => {
+    geocode(req.query.address, process.env.MAPBOX_API_KEY, (error, {latitude, longitude, location} = {}) => {
         if (error) {
             return res.send({error})
         }
 
-        forecast(latitude, longitude, (error, forecastData) => {
+        forecast(latitude, longitude, process.env.WEATHERSTACK_API_KEY, (error, forecastData) => {
             if (error) {
                 return res.send({error})
             }
